@@ -2,18 +2,25 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
-	gin.DisableConsoleColor()
 	r := gin.Default()
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
 
-	log.Fatal(r.Run(":8089"))
+	s:= &http.Server{
+		Addr: ":8080",
+		Handler: r,
+		ReadTimeout: 10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	s.ListenAndServe()
 }
